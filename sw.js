@@ -1,5 +1,5 @@
 /* Золотой Стол — service worker: офлайн-кэш */
-var CACHE = "zolotoy-stol-v1";
+var CACHE = "zolotoy-stol-v2";
 var ASSETS = [
   "./",
   "./index.html",
