@@ -39,8 +39,12 @@
   html,body{
     margin:0; padding:0; height:100%;
     background:
-      radial-gradient(ellipse at 50% -10%, #17352578 0%, transparent 60%),
+      radial-gradient(ellipse at 50% -10%, #1d4a3488 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 110%, #3a2a0a55 0%, transparent 50%),
+      radial-gradient(ellipse at 8% 105%, #0e2a4a44 0%, transparent 50%),
+      repeating-conic-gradient(from 45deg, rgba(212,175,55,.05) 0deg 45deg, transparent 45deg 90deg),
       var(--bg);
+    background-attachment: fixed;
     color:var(--cream);
     font-family:var(--sans);
     -webkit-tap-highlight-color: transparent;
@@ -328,6 +332,46 @@
     box-shadow:var(--shadow); font-family:var(--serif); max-width:90%; text-align:center;
   }
 
+  /* ---------- CARD GAMES (durak/poker/uno) ---------- */
+  .card.sm{ width:40px; height:56px; font-size:14px; margin-left:-18px; }
+  .cards.wrap{ flex-wrap:wrap; row-gap:8px; }
+  .dk-table{ display:flex; justify-content:center; gap:22px; min-height:62px; margin:12px 0; align-items:center; }
+  .bet-custom{ display:flex; gap:8px; justify-content:center; align-items:center; margin:10px 0 2px; }
+  .bet-custom input{
+    width:120px; background:var(--panel); border:1px solid var(--gold-dim);
+    color:var(--gold-light); border-radius:10px; padding:10px; font-size:14px;
+    font-family:var(--serif); text-align:center;
+  }
+  .bet-custom input:focus{ outline:none; border-color:var(--gold); }
+  .chip-btn.mini{ width:auto; height:auto; border-radius:10px; padding:10px 14px; font-size:13px; }
+  .chip-max{ background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold-dim)) !important; color:#2a1e05; }
+  .uno-card{
+    width:44px; height:64px; border-radius:8px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:bold; font-size:16px; color:#fff;
+    border:2px solid rgba(255,255,255,.55); margin-left:-12px;
+    box-shadow:0 3px 6px rgba(0,0,0,.5); cursor:pointer; position:relative;
+  }
+  .uno-card:first-child{ margin-left:0; }
+  .uno-card.red{ background:linear-gradient(160deg,#d9534a,#b8342a); }
+  .uno-card.yellow{ background:linear-gradient(160deg,#e8b93a,#c8931f); color:#3a2a00; }
+  .uno-card.green{ background:linear-gradient(160deg,#2ea866,#1e6b45); }
+  .uno-card.blue{ background:linear-gradient(160deg,#2e86c1,#1a5276); }
+  .uno-card.wild{ background:linear-gradient(135deg,#b8342a 0 25%,#c8931f 25% 50%,#1e6b45 50% 75%,#1a5276 75%); }
+  .uno-card.playable{ outline:2px solid var(--gold-light); outline-offset:1px; transform:translateY(-4px); }
+  .uno-card.static{ cursor:default; }
+  .uno-pile{
+    width:60px; height:86px; background:repeating-linear-gradient(45deg,#1a3a28,#1a3a28 4px,#123524 4px,#123524 8px);
+    border:1px solid var(--gold-dim); border-radius:10px; color:var(--gold-light);
+    font-size:24px; cursor:pointer; font-family:var(--serif); line-height:1.2;
+  }
+  .color-dot{ width:18px; height:18px; border-radius:50%; display:inline-block; border:2px solid rgba(255,255,255,.4); vertical-align:middle; }
+  .color-dot.red{ background:#c0392b; } .color-dot.yellow{ background:#d4a017; }
+  .color-dot.green{ background:#1e8449; } .color-dot.blue{ background:#1a5276; }
+  .color-btn{ width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,255,255,.5); cursor:pointer; }
+  .color-btn.red{ background:#c0392b; } .color-btn.yellow{ background:#d4a017; }
+  .color-btn.green{ background:#1e8449; } .color-btn.blue{ background:#1a5276; }
+
   footer{ text-align:center; padding:14px; color:var(--cream-dim); font-size:11px; opacity:.6; }
 </style>
 </head>
@@ -390,6 +434,30 @@
           </div>
           <div class="table-go">→</div>
         </div>
+        <div class="table-card" data-target="screen-durak">
+          <div class="table-ic">🃟</div>
+          <div class="table-info">
+            <h3 data-i18n="durakName">Дурак</h3>
+            <p data-i18n="durakDesc">Подкидной дурак против соперника. Избавьтесь от карт раньше!</p>
+          </div>
+          <div class="table-go">→</div>
+        </div>
+        <div class="table-card" data-target="screen-poker">
+          <div class="table-ic">♠️</div>
+          <div class="table-info">
+            <h3 data-i18n="pokerName">Покер</h3>
+            <p data-i18n="pokerDesc">Техасский холдем один на один. Лучшая комбинация забирает банк.</p>
+          </div>
+          <div class="table-go">→</div>
+        </div>
+        <div class="table-card" data-target="screen-uno">
+          <div class="table-ic">🟥</div>
+          <div class="table-info">
+            <h3 data-i18n="unoName">Уно</h3>
+            <p data-i18n="unoDesc">Сбросьте все карты первым. Действия и смена цвета!</p>
+          </div>
+          <div class="table-go">→</div>
+        </div>
       </div>
     </div>
 
@@ -412,6 +480,12 @@
           <button class="chip-btn chip-100" data-slotbet="100">100</button>
           <button class="chip-btn chip-500" data-slotbet="500">500</button>
         </div>
+        <div class="bet-custom">
+          <input type="number" id="slotsBetInput" min="1" step="1" value="10" placeholder="Своя ставка" data-i18n-ph="betAny">
+          <button class="chip-btn mini" id="slotsBetApply">OK</button>
+          <button class="chip-btn mini chip-max" id="slotsBetMax" data-i18n="betMax">Макс</button>
+        </div>
+
         <button class="primary-btn" id="spinBtn" data-i18n="spinBtn">Крутить</button>
         <div class="msg" id="slotsMsg"></div>
         <div class="paytable" id="paytableText"></div>
@@ -440,6 +514,12 @@
           <button class="chip-btn chip-100" data-roubet="100">100</button>
           <button class="chip-btn chip-500" data-roubet="500">500</button>
         </div>
+        <div class="bet-custom">
+          <input type="number" id="rouBetInput" min="1" step="1" value="10" placeholder="Своя ставка" data-i18n-ph="betAny">
+          <button class="chip-btn mini" id="rouBetApply">OK</button>
+          <button class="chip-btn mini chip-max" id="rouBetMax" data-i18n="betMax">Макс</button>
+        </div>
+
         <div class="bet-grid" id="numberGrid"></div>
         <div class="outside-bets">
           <div class="outside-bet" data-outside="red" data-i18n="outsideRed">Красное ×2</div>
@@ -477,6 +557,11 @@
             <button class="chip-btn chip-100" data-bjbet="100">100</button>
             <button class="chip-btn chip-500" data-bjbet="500">500</button>
           </div>
+          <div class="bet-custom">
+            <input type="number" id="bjBetInput" min="1" step="1" value="10" placeholder="Своя ставка" data-i18n-ph="betAny">
+            <button class="chip-btn mini" id="bjBetApply">OK</button>
+            <button class="chip-btn mini chip-max" id="bjBetMax" data-i18n="betMax">Макс</button>
+          </div>
           <button class="primary-btn" id="dealBtn" data-i18n="dealBtn">Сдать карты</button>
         </div>
 
@@ -492,6 +577,114 @@
       </div>
     </div>
 
+
+    <!-- DURAK -->
+    <div id="screen-durak" class="game-screen">
+      <div class="topbar">
+        <button class="back-btn" data-back><span data-i18n="backBtn">← Лобби</span></button>
+        <div class="game-title" data-i18n="durakName">Дурак</div>
+      </div>
+      <div class="felt-panel">
+        <div class="hand-label"><span data-i18n="opponent">Соперник</span> <b id="dkAiCount"></b></div>
+        <div class="cards wrap" id="dkAiHand"></div>
+        <div class="dk-table" id="dkTable"></div>
+        <div class="hand-label"><span data-i18n="you">Вы</span> <b id="dkTrump"></b></div>
+        <div class="cards wrap" id="dkPlayerHand"></div>
+                <div class="current-bet"><span data-i18n="betLabel">Ставка:</span> <b id="dkBetDisplay">10</b></div>
+        <div class="bet-row">
+          <button class="chip-btn chip-10" data-dkbet="10">10</button>
+          <button class="chip-btn chip-50" data-dkbet="50">50</button>
+          <button class="chip-btn chip-100" data-dkbet="100">100</button>
+          <button class="chip-btn chip-500" data-dkbet="500">500</button>
+        </div>
+        <div class="bet-custom">
+          <input type="number" id="dkBetInput" min="1" step="1" value="10" placeholder="Своя ставка" data-i18n-ph="betAny">
+          <button class="chip-btn mini" id="dkBetApply">OK</button>
+          <button class="chip-btn mini chip-max" id="dkBetMax" data-i18n="betMax">Макс</button>
+        </div>
+
+        <button class="primary-btn" id="dkDealBtn" data-i18n="dealBtn">Сдать карты</button>
+        <div class="btn-row" id="dkTakeWrap" style="display:none;">
+          <button class="secondary-btn" id="dkTakeBtn" data-i18n="durakTake">Взять</button>
+        </div>
+        <div class="msg" id="dkMsg"></div>
+      </div>
+    </div>
+
+    <!-- POKER -->
+    <div id="screen-poker" class="game-screen">
+      <div class="topbar">
+        <button class="back-btn" data-back><span data-i18n="backBtn">← Лобби</span></button>
+        <div class="game-title" data-i18n="pokerName">Покер</div>
+      </div>
+      <div class="felt-panel">
+        <div class="hand-label"><span data-i18n="opponent">Соперник</span></div>
+        <div class="cards" id="pkAiCards"></div>
+        <div class="cards" id="pkCommunity" style="justify-content:center; margin:12px 0;"></div>
+        <div class="hand-label"><span data-i18n="you">Вы</span></div>
+        <div class="cards" id="pkPlayerCards"></div>
+        <div class="current-bet" id="pkHandName" style="color:var(--gold-light);font-family:var(--serif);"></div>
+                <div class="current-bet"><span data-i18n="betLabel">Ставка:</span> <b id="pkBetDisplay">10</b></div>
+        <div class="bet-row">
+          <button class="chip-btn chip-10" data-pkbet="10">10</button>
+          <button class="chip-btn chip-50" data-pkbet="50">50</button>
+          <button class="chip-btn chip-100" data-pkbet="100">100</button>
+          <button class="chip-btn chip-500" data-pkbet="500">500</button>
+        </div>
+        <div class="bet-custom">
+          <input type="number" id="pkBetInput" min="1" step="1" value="10" placeholder="Своя ставка" data-i18n-ph="betAny">
+          <button class="chip-btn mini" id="pkBetApply">OK</button>
+          <button class="chip-btn mini chip-max" id="pkBetMax" data-i18n="betMax">Макс</button>
+        </div>
+
+        <button class="primary-btn" id="pkPlayBtn" data-i18n="pokerPlay">Играть</button>
+        <div class="msg" id="pkMsg"></div>
+      </div>
+    </div>
+
+    <!-- UNO -->
+    <div id="screen-uno" class="game-screen">
+      <div class="topbar">
+        <button class="back-btn" data-back><span data-i18n="backBtn">← Лобби</span></button>
+        <div class="game-title" data-i18n="unoName">Уно</div>
+      </div>
+      <div class="felt-panel">
+        <div class="hand-label"><span data-i18n="opponent">Соперник</span> <b id="unAiCount"></b></div>
+        <div class="cards wrap" id="unAiHand"></div>
+        <div style="display:flex; justify-content:center; align-items:center; gap:18px; margin:14px 0;">
+          <button class="uno-pile" id="unDrawPile">🂠<br><span id="unDrawCount" style="font-size:11px;">0</span></button>
+          <div id="unDiscard"></div>
+          <div id="unColorBadge" style="font-size:12px;color:var(--cream-dim);"></div>
+        </div>
+        <div id="unColorChooser" style="display:none; justify-content:center; gap:12px; margin-bottom:12px;">
+          <button class="color-btn red" data-color="red" aria-label="red"></button>
+          <button class="color-btn yellow" data-color="yellow" aria-label="yellow"></button>
+          <button class="color-btn green" data-color="green" aria-label="green"></button>
+          <button class="color-btn blue" data-color="blue" aria-label="blue"></button>
+        </div>
+        <div class="hand-label"><span data-i18n="you">Вы</span></div>
+        <div class="cards wrap" id="unPlayerHand"></div>
+                <div class="current-bet"><span data-i18n="betLabel">Ставка:</span> <b id="unBetDisplay">10</b></div>
+        <div class="bet-row">
+          <button class="chip-btn chip-10" data-unbet="10">10</button>
+          <button class="chip-btn chip-50" data-unbet="50">50</button>
+          <button class="chip-btn chip-100" data-unbet="100">100</button>
+          <button class="chip-btn chip-500" data-unbet="500">500</button>
+        </div>
+        <div class="bet-custom">
+          <input type="number" id="unBetInput" min="1" step="1" value="10" placeholder="Своя ставка" data-i18n-ph="betAny">
+          <button class="chip-btn mini" id="unBetApply">OK</button>
+          <button class="chip-btn mini chip-max" id="unBetMax" data-i18n="betMax">Макс</button>
+        </div>
+
+        <button class="primary-btn" id="unStartBtn" data-i18n="dealBtn">Сдать карты</button>
+        <div class="btn-row">
+          <button class="secondary-btn" id="unDrawBtn" data-i18n="unoDraw">Взять карту</button>
+          <button class="secondary-btn" id="unPassBtn" data-i18n="unoPass">Пас</button>
+        </div>
+        <div class="msg" id="unMsg"></div>
+      </div>
+    </div>
 
     <!-- CLICKER -->
     <div id="screen-clicker" class="game-screen">
@@ -546,7 +739,7 @@
       brandSub: "МИНИ-КАЗИНО",
       footer: "Игра ведётся на виртуальные фишки. Реальные деньги не используются.",
       lobbyTitle: "Выберите стол",
-      lobbySub: "Три игры, одна касса. Удачи за столом.",
+      lobbySub: "Шесть игр, одна касса. Удачи за столом!",
       slotsName: "Слоты",
       slotsDesc: "Три барабана, шесть символов. Соберите комбинацию — сорвите куш.",
       rouletteName: "Рулетка",
@@ -599,7 +792,7 @@
       bjPush: "Ничья. Ставка возвращена",
       bjDealerWins: "Дилер сильнее. Вы проиграли",
 
-      outOfChips: "Фишки закончились. Получить ещё 1000 на кассе?",
+      outOfChips: "Фишки закончились. Получить ещё 1 000 000 на кассе?",
       clickerName: "Кликер",
       clickerDesc: "Кликайте по монете — каждый клик приносит 0.1 коина.",
       clickerEarned: "Всего заработано:",
@@ -632,7 +825,7 @@
       aC10k: "10 000 кликов",
       aC100k: "100 000 кликов",
       aC500k: "500 000 кликов",
-      aC1m: "1 000 000 кликов!",
+      aC1m: "100 000 000 кликов!",
       aE500: "Заработать 500 коинов",
       aE5k: "Заработать 5 000 коинов",
       aE50k: "Заработать 50 000 коинов",
@@ -641,13 +834,50 @@
       aFirstUp: "Первая покупка",
       aCrit: "Критический удар",
       aBiz: "Бизнесмен",
+      durakName: "Дурак",
+      durakDesc: "Подкидной дурак против соперника. Избавьтесь от карт раньше!",
+      durakTrump: "Козырь",
+      durakTake: "Взять",
+      durakAttack: "Ваш ход: сыграйте карту",
+      durakDefend: "Отбейтесь или возьмите карту",
+      durakAiAttack: "Соперник атакует…",
+      durakAiTakes: "Соперник берёт карту",
+      durakWin: "Вы раздали сопернику! Выигрыш: {win}",
+      durakLose: "Соперник избавился от карт. Вы проиграли",
+      durakDraw: "Ничья! Ставка возвращена",
+      pokerName: "Покер",
+      pokerDesc: "Техасский холдем один на один. Лучшая комбинация забирает банк.",
+      pokerPlay: "Играть",
+      pokerPot: "Банк: {pot}",
+      pokerYourHand: "Ваша комбинация: {hand}",
+      pokerWin: "Вы выиграли банк: {win}!",
+      pokerLose: "Соперник сильнее. Вы проиграли",
+      pokerTie: "Ничья! Ставки возвращены",
+      pkN0: "Старшая карта", pkN1: "Пара", pkN2: "Две пары", pkN3: "Тройка",
+      pkN4: "Стрит", pkN5: "Флеш", pkN6: "Фулл-хаус", pkN7: "Каре", pkN8: "Стрит-флеш",
+      unoName: "Уно",
+      unoDesc: "Сбросьте все карты первым. Действия и смена цвета!",
+      unoDraw: "Взять карту",
+      unoPass: "Пас",
+      unoYourTurn: "Ваш ход",
+      unoAiTurn: "Ход соперника…",
+      unoDrew: "Вы взяли карту. Сыграйте её или пас",
+      unoChoose: "Выберите цвет",
+      unoColor: "Цвет",
+      unoWin: "УНО! Вы выиграли {win}!",
+      unoLose: "Соперник сбросил все карты. Вы проиграли",
+      color_red: "красный", color_yellow: "жёлтый", color_green: "зелёный", color_blue: "синий",
+      opponent: "Соперник",
+      you: "Вы",
+      betAny: "Своя ставка",
+      betMax: "Макс",
     },
     en: {
       brandName: "Golden Table",
       brandSub: "MINI-CASINO",
       footer: "Chips are virtual. No real money is used.",
       lobbyTitle: "Choose a table",
-      lobbySub: "Three games, one cashier. Good luck at the table.",
+      lobbySub: "Six games, one cashier. Good luck at the table!",
       slotsName: "Slots",
       slotsDesc: "Three reels, six symbols. Line them up to hit the jackpot.",
       rouletteName: "Roulette",
@@ -700,7 +930,7 @@
       bjPush: "Push. Bet returned",
       bjDealerWins: "Dealer wins. You lose",
 
-      outOfChips: "Out of chips. Get 1000 more at the cashier?",
+      outOfChips: "Out of chips. Get 1,000,000 more at the cashier?",
       clickerName: "Clicker",
       clickerDesc: "Tap the coin — each click earns 0.1 coins.",
       clickerEarned: "Total earned:",
@@ -733,7 +963,7 @@
       aC10k: "10,000 clicks",
       aC100k: "100,000 clicks",
       aC500k: "500,000 clicks",
-      aC1m: "1,000,000 clicks!",
+      aC1m: "100,000,000 clicks!",
       aE500: "Earn 500 coins",
       aE5k: "Earn 5,000 coins",
       aE50k: "Earn 50,000 coins",
@@ -742,6 +972,43 @@
       aFirstUp: "First purchase",
       aCrit: "Critical hit",
       aBiz: "Business owner",
+      durakName: "Durak",
+      durakDesc: "Draw durak vs an opponent. Get rid of your cards first!",
+      durakTrump: "Trump",
+      durakTake: "Take",
+      durakAttack: "Your turn: play a card",
+      durakDefend: "Beat it or take the card",
+      durakAiAttack: "Opponent is attacking…",
+      durakAiTakes: "Opponent takes the card",
+      durakWin: "You beat the opponent! You win: {win}",
+      durakLose: "Opponent got rid of all cards. You lose",
+      durakDraw: "Draw! Bet returned",
+      pokerName: "Poker",
+      pokerDesc: "Heads-up Texas Hold'em. Best hand takes the pot.",
+      pokerPlay: "Play",
+      pokerPot: "Pot: {pot}",
+      pokerYourHand: "Your hand: {hand}",
+      pokerWin: "You take the pot: {win}!",
+      pokerLose: "Opponent wins. You lose",
+      pokerTie: "Tie! Bets returned",
+      pkN0: "High card", pkN1: "Pair", pkN2: "Two pair", pkN3: "Three of a kind",
+      pkN4: "Straight", pkN5: "Flush", pkN6: "Full house", pkN7: "Four of a kind", pkN8: "Straight flush",
+      unoName: "Uno",
+      unoDesc: "Empty your hand first. Action cards and color changes!",
+      unoDraw: "Draw card",
+      unoPass: "Pass",
+      unoYourTurn: "Your turn",
+      unoAiTurn: "Opponent's turn…",
+      unoDrew: "You drew a card. Play it or pass",
+      unoChoose: "Choose a color",
+      unoColor: "Color",
+      unoWin: "UNO! You win {win}!",
+      unoLose: "Opponent emptied their hand. You lose",
+      color_red: "red", color_yellow: "yellow", color_green: "green", color_blue: "blue",
+      opponent: "Opponent",
+      you: "You",
+      betAny: "Custom bet",
+      betMax: "Max",
     }
   };
 
@@ -775,6 +1042,7 @@
     document.querySelectorAll("[data-i18n]").forEach(function(el){
       el.innerHTML = t(el.dataset.i18n);
     });
+    document.querySelectorAll("[data-i18n-ph]").forEach(function(el){ el.placeholder = t(el.dataset.i18nPh); });
     document.getElementById("paytableText").innerHTML = t("paytable");
     document.getElementById("slotsMsg").innerHTML = t(msgState.slots.key, msgState.slots.params);
     document.getElementById("rouletteMsg").innerHTML = t(msgState.roulette.key, msgState.roulette.params);
@@ -800,7 +1068,7 @@
   /* ---------- BALANCE ---------- */
   var balanceKey = "zolotoy_stol_balance";
   var balance = parseFloat(localStorage.getItem(balanceKey));
-  if(isNaN(balance) || balance < 0) balance = 1000;
+  if(isNaN(balance) || balance < 0) balance = 1000000;
   var balanceEl = document.getElementById("balanceDisplay");
   function setBalance(v){
     balance = Math.max(0, Math.round(v * 10) / 10);
@@ -810,7 +1078,7 @@
     if(balance === 0){
       setTimeout(function(){
         if(confirm(t("outOfChips"))){
-          setBalance(1000);
+          setBalance(1000000);
         }
       }, 400);
     }
@@ -827,6 +1095,62 @@
   document.querySelectorAll("[data-back]").forEach(function(btn){
     btn.addEventListener("click", function(){ showScreen("lobby"); });
   });
+
+  /* ---------- CUSTOM BET + WIN CELEBRATION ---------- */
+  function setupCustomBet(prefix, onApply){
+    var input = document.getElementById(prefix + "BetInput");
+    var applyBtn = document.getElementById(prefix + "BetApply");
+    var maxBtn = document.getElementById(prefix + "BetMax");
+    if(!input || !applyBtn) return;
+    applyBtn.addEventListener("click", function(){
+      var v = parseInt(input.value, 10);
+      if(isNaN(v) || v < 1) v = 1;
+      var cap = Math.max(1, Math.floor(balance));
+      if(v > cap) v = cap;
+      input.value = v;
+      if(onApply) onApply(v);
+    });
+    if(maxBtn) maxBtn.addEventListener("click", function(){
+      var v = Math.max(1, Math.floor(balance));
+      input.value = v;
+      if(onApply) onApply(v);
+    });
+  }
+
+  function celebrate(big){
+    var cv = document.createElement("canvas");
+    cv.style.cssText = "position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:100";
+    document.body.appendChild(cv);
+    var ctx = cv.getContext("2d");
+    cv.width = window.innerWidth; cv.height = window.innerHeight;
+    var emo = ["🎉","💰","⭐","🎊","💎","🔥","🪙","✨","🤑","🏆"];
+    var cols = ["#d4af37","#f2cf7e","#d9534a","#4c8c5c","#4b6fb0","#e8b93a","#2ea866"];
+    var N = big ? 200 : 110;
+    var ps = [];
+    for(var i=0;i<N;i++){
+      ps.push({
+        x: Math.random()*cv.width, y: -30 - Math.random()*cv.height*0.6,
+        vx: (Math.random()-0.5)*2.4, vy: 2.2 + Math.random()*4,
+        s: 12 + Math.random()*18, r: Math.random()*Math.PI, vr: (Math.random()-0.5)*0.25,
+        e: emo[i % emo.length], c: cols[i % cols.length], isEmoji: Math.random() < 0.45
+      });
+    }
+    var start = Date.now();
+    (function tick(){
+      ctx.clearRect(0,0,cv.width,cv.height);
+      var alive = false;
+      ps.forEach(function(p){
+        p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vy += 0.02;
+        if(p.y < cv.height + 50) alive = true;
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.r);
+        if(p.isEmoji){ ctx.font = p.s + "px serif"; ctx.textAlign = "center"; ctx.fillText(p.e, 0, 0); }
+        else { ctx.fillStyle = p.c; ctx.fillRect(-p.s/2, -p.s/4, p.s, p.s/2); }
+        ctx.restore();
+      });
+      if(alive && Date.now() - start < 4500) requestAnimationFrame(tick);
+      else cv.remove();
+    })();
+  }
 
   /* =========================================================
      SLOTS
@@ -845,6 +1169,7 @@
         document.getElementById("slotsBetDisplay").textContent = bet;
       });
     });
+    setupCustomBet("slots", function(v){ bet = v; document.getElementById("slotsBetDisplay").textContent = v; });
 
     function weightedSymbol(){
       var total = weights.reduce(function(a,b){return a+b;},0);
@@ -897,7 +1222,7 @@
       } else {
         setMsg("slots", msgEl, "slotsLose");
       }
-      if(win > 0) setBalance(balance + win);
+      if(win > 0){ setBalance(balance + win); celebrate(win >= bet * 3); }
       spinning = false;
       spinBtn.disabled = false;
     }
@@ -927,6 +1252,7 @@
         betDisplay.textContent = bet;
       });
     });
+    setupCustomBet("rou", function(v){ bet = v; document.getElementById("rouletteBetDisplay").textContent = v; });
 
     // build number grid 1-36 in 3 rows like classic layout, plus 0
     var grid = document.getElementById("numberGrid");
@@ -1031,6 +1357,7 @@
       }
       if(win > 0){
         setBalance(balance + win);
+        celebrate(selection.type === "number");
         setMsg("roulette", msgEl, "rouletteWin", {n:num, win:win});
       } else {
         setMsg("roulette", msgEl, "rouletteLose", {n:num});
@@ -1068,6 +1395,7 @@
         betDisplay.textContent = bet;
       });
     });
+    setupCustomBet("bj", function(v){ bet = v; document.getElementById("bjBetDisplay").textContent = v; });
 
     function freshDeck(){
       var d = [];
@@ -1207,6 +1535,7 @@
       }
 
       if(win > 0) setBalance(balance + win);
+      if(win > bet) celebrate(playerBJ);
       setMsg("blackjack", msgEl, key, params);
 
       actionPanel.style.display = "none";
@@ -1216,6 +1545,586 @@
     }
   })();
 
+
+
+  /* =========================================================
+     DURAK (2 players: you vs AI)
+  ========================================================== */
+  (function(){
+    var suits = ["♠","♥","♦","♣"];
+    var ranks = ["6","7","8","9","10","J","Q","K","A"];
+    var bet = 10, gameOn = false, busy = false;
+    var deck = [], trumpSuit = "", player = [], ai = [], attacker = "p", tableAtk = null;
+
+    var aiHandEl = document.getElementById("dkAiHand");
+    var playerHandEl = document.getElementById("dkPlayerHand");
+    var tableEl = document.getElementById("dkTable");
+    var msgEl = document.getElementById("dkMsg");
+    var dealBtn = document.getElementById("dkDealBtn");
+    var takeBtn = document.getElementById("dkTakeBtn");
+    var takeWrap = document.getElementById("dkTakeWrap");
+    var trumpEl = document.getElementById("dkTrump");
+    var aiCountEl = document.getElementById("dkAiCount");
+
+    document.querySelectorAll("[data-dkbet]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(gameOn) return;
+        bet = parseInt(btn.dataset.dkbet, 10);
+        document.getElementById("dkBetDisplay").textContent = bet;
+      });
+    });
+    setupCustomBet("dk", function(v){ bet = v; document.getElementById("dkBetDisplay").textContent = v; });
+
+    function makeCard(r, s){ return {r:r, s:s, c:(s==="♥"||s==="♦")?"red":"black"}; }
+    function newDeck(){
+      var d = [];
+      suits.forEach(function(s){ ranks.forEach(function(r){ d.push(makeCard(r,s)); }); });
+      for(var i=d.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=d[i]; d[i]=d[j]; d[j]=tmp; }
+      return d;
+    }
+    function val(c){ return ranks.indexOf(c.r); }
+    function beats(def, atk){
+      if(def.s === atk.s && val(def) > val(atk)) return true;
+      if(def.s === trumpSuit && atk.s !== trumpSuit) return true;
+      return false;
+    }
+    function sortHand(h){
+      h.sort(function(a,b){
+        var at = (a.s===trumpSuit)?1:0, bt = (b.s===trumpSuit)?1:0;
+        if(at !== bt) return at-bt;
+        if(a.s !== b.s) return suits.indexOf(a.s)-suits.indexOf(b.s);
+        return val(a)-val(b);
+      });
+    }
+    function cardEl(c, small){
+      var d = document.createElement("div");
+      d.className = "card" + (small ? " sm" : "") + " " + c.c;
+      d.innerHTML = c.r + "<span style='font-size:" + (small ? 14 : 20) + "px'>" + c.s + "</span>";
+      d.style.marginLeft = "0";
+      return d;
+    }
+    function render(){
+      aiHandEl.innerHTML = "";
+      ai.forEach(function(){
+        var b = document.createElement("div");
+        b.className = "card sm back";
+        aiHandEl.appendChild(b);
+      });
+      aiCountEl.textContent = ai.length;
+      tableEl.innerHTML = "";
+      if(tableAtk) tableEl.appendChild(cardEl(tableAtk, true));
+      playerHandEl.innerHTML = "";
+      player.forEach(function(c, idx){
+        var el = cardEl(c, true);
+        el.style.cursor = "pointer";
+        el.addEventListener("click", function(){ onPlayerCard(idx); });
+        playerHandEl.appendChild(el);
+      });
+      trumpEl.textContent = t("durakTrump") + ": " + trumpSuit + " · " + deck.length;
+      takeWrap.style.display = (gameOn && attacker === "a" && tableAtk) ? "flex" : "none";
+    }
+
+    dealBtn.addEventListener("click", function(){
+      if(gameOn) return;
+      if(balance < bet){ msgEl.innerHTML = t("insufficient"); return; }
+      setBalance(balance - bet);
+      deck = newDeck();
+      trumpSuit = deck[deck.length-1].s;
+      player = deck.splice(0, 6); ai = deck.splice(0, 6);
+      attacker = "p"; tableAtk = null; gameOn = true; busy = false;
+      sortHand(player); sortHand(ai);
+      msgEl.innerHTML = t("durakAttack");
+      render();
+    });
+
+    takeBtn.addEventListener("click", function(){
+      if(!gameOn || attacker !== "a" || !tableAtk) return;
+      player.push(tableAtk); tableAtk = null;
+      sortHand(player);
+      refill();
+      if(checkEnd()) return;
+      msgEl.innerHTML = t("durakAiAttack");
+      render();
+      setTimeout(aiAttack, 700);
+    });
+
+    function onPlayerCard(idx){
+      if(!gameOn || busy) return;
+      var c = player[idx];
+      if(attacker === "p"){
+        player.splice(idx, 1);
+        tableAtk = c;
+        var def = aiDefend(c);
+        busy = true;
+        render();
+        if(def){
+          setTimeout(function(){
+            ai.splice(ai.indexOf(def), 1);
+            tableAtk = null;
+            swap(); refill(); busy = false;
+            if(checkEnd()) return;
+            msgEl.innerHTML = t("durakAiAttack");
+            render();
+            setTimeout(aiAttack, 700);
+          }, 600);
+        } else {
+          msgEl.innerHTML = t("durakAiTakes");
+          setTimeout(function(){
+            ai.push(c); tableAtk = null;
+            sortHand(ai); refill(); busy = false;
+            if(checkEnd()) return;
+            msgEl.innerHTML = t("durakAttack");
+            render();
+          }, 600);
+        }
+      } else {
+        if(!tableAtk || !beats(c, tableAtk)) return;
+        player.splice(idx, 1);
+        tableAtk = null;
+        swap(); refill();
+        if(checkEnd()){ render(); return; }
+        msgEl.innerHTML = t("durakAttack");
+        render();
+      }
+    }
+
+    function aiAttack(){
+      if(!gameOn || ai.length === 0){ checkEnd(); return; }
+      var sorted = ai.slice().sort(function(a,b){
+        var at = (a.s===trumpSuit)?1:0, bt = (b.s===trumpSuit)?1:0;
+        if(at !== bt) return at-bt;
+        return val(a)-val(b);
+      });
+      var c = sorted[0];
+      ai.splice(ai.indexOf(c), 1);
+      tableAtk = c;
+      msgEl.innerHTML = t("durakDefend");
+      render();
+    }
+
+    function aiDefend(atk){
+      var opts = ai.filter(function(c){ return beats(c, atk); }).sort(function(a,b){ return val(a)-val(b); });
+      return opts.length ? opts[0] : null;
+    }
+
+    function swap(){ attacker = (attacker === "p") ? "a" : "p"; }
+    function refill(){
+      if(attacker === "p"){ drawUp(player); drawUp(ai); }
+      else { drawUp(ai); drawUp(player); }
+    }
+    function drawUp(h){ while(h.length < 6 && deck.length) h.push(deck.pop()); sortHand(h); }
+
+    function checkEnd(){
+      if(deck.length > 0) return false;
+      if(player.length === 0 || ai.length === 0){
+        gameOn = false; tableAtk = null;
+        render();
+        if(player.length === 0 && ai.length === 0){
+          setBalance(balance + bet);
+          msgEl.innerHTML = t("durakDraw");
+        } else if(player.length === 0){
+          setBalance(balance + bet * 2);
+          celebrate(true);
+          msgEl.innerHTML = t("durakWin", {win: bet * 2});
+        } else {
+          msgEl.innerHTML = t("durakLose");
+        }
+        return true;
+      }
+      return false;
+    }
+  })();
+
+  /* =========================================================
+     POKER (heads-up Texas Hold'em vs AI)
+  ========================================================== */
+  (function(){
+    var suits = ["♠","♥","♦","♣"];
+    var ranks = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+    var bet = 10, playing = false;
+    var player = [], ai = [], community = [];
+
+    var aiEl = document.getElementById("pkAiCards");
+    var comEl = document.getElementById("pkCommunity");
+    var plEl = document.getElementById("pkPlayerCards");
+    var msgEl = document.getElementById("pkMsg");
+    var handNameEl = document.getElementById("pkHandName");
+    var playBtn = document.getElementById("pkPlayBtn");
+
+    document.querySelectorAll("[data-pkbet]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(playing) return;
+        bet = parseInt(btn.dataset.pkbet, 10);
+        document.getElementById("pkBetDisplay").textContent = bet;
+      });
+    });
+    setupCustomBet("pk", function(v){ bet = v; document.getElementById("pkBetDisplay").textContent = v; });
+
+    function makeCard(r, s){ return {r:r, s:s, c:(s==="♥"||s==="♦")?"red":"black"}; }
+    function rv(c){ return ranks.indexOf(c.r); }
+    function newDeck(){
+      var d = [];
+      suits.forEach(function(s){ ranks.forEach(function(r){ d.push(makeCard(r,s)); }); });
+      for(var i=d.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=d[i]; d[i]=d[j]; d[j]=tmp; }
+      return d;
+    }
+    function cardEl(c, small){
+      var d = document.createElement("div");
+      d.className = "card" + (small ? " sm" : "") + " " + c.c;
+      d.innerHTML = c.r + "<span style='font-size:" + (small ? 14 : 20) + "px'>" + c.s + "</span>";
+      return d;
+    }
+    function cmp(a, b){
+      var n = Math.max(a.length, b.length);
+      for(var i=0;i<n;i++){
+        var x = a[i]||0, y = b[i]||0;
+        if(x > y) return 1;
+        if(x < y) return -1;
+      }
+      return 0;
+    }
+    function eval5(cs){
+      var cnt = {};
+      cs.forEach(function(c){ cnt[c.r] = (cnt[c.r]||0) + 1; });
+      var groups = Object.keys(cnt).map(function(r){ return [cnt[r], rv({r:r})]; })
+        .sort(function(a,b){ return b[0]-a[0] || b[1]-a[1]; });
+      var flush = cs.every(function(c){ return c.s === cs[0].s; });
+      var vals = cs.map(rv).sort(function(a,b){ return a-b; });
+      var uniq = [];
+      vals.forEach(function(v){ if(uniq.indexOf(v) === -1) uniq.push(v); });
+      var straight = false, sHigh = uniq.length ? uniq[uniq.length-1] : 0;
+      if(uniq.length === 5){
+        if(uniq[4] - uniq[0] === 4){ straight = true; }
+        else if(uniq.join() === "0,1,2,3,12"){ straight = true; sHigh = 3; }
+      }
+      var desc = vals.slice().sort(function(a,b){ return b-a; });
+      if(straight && flush) return [8, sHigh];
+      if(groups[0][0] === 4) return [7, groups[0][1], groups[1][1]];
+      if(groups[0][0] === 3 && groups[1][0] === 2) return [6, groups[0][1], groups[1][1]];
+      if(flush) return [5].concat(desc);
+      if(straight) return [4, sHigh];
+      if(groups[0][0] === 3) return [3, groups[0][1], groups[1][1], groups[2][1]];
+      if(groups[0][0] === 2 && groups[1][0] === 2) return [2, groups[0][1], groups[1][1], groups[2][1]];
+      if(groups[0][0] === 2) return [1, groups[0][1]].concat(groups.slice(1).map(function(g){ return g[1]; }));
+      return [0].concat(desc);
+    }
+    function best7(cards){
+      var best = null;
+      for(var a=0;a<7;a++)for(var b=a+1;b<7;b++)for(var c=b+1;c<7;c++)for(var d=c+1;d<7;d++)for(var e=d+1;e<7;e++){
+        var s = eval5([cards[a],cards[b],cards[c],cards[d],cards[e]]);
+        if(!best || cmp(s, best) > 0) best = s;
+      }
+      return best;
+    }
+
+    function render(reveal){
+      aiEl.innerHTML = "";
+      ai.forEach(function(c){
+        aiEl.appendChild(reveal ? cardEl(c, true) : (function(){ var b = document.createElement("div"); b.className = "card sm back"; return b; })());
+      });
+      comEl.innerHTML = "";
+      for(var i=0;i<5;i++){
+        if(i < community.length) comEl.appendChild(cardEl(community[i], true));
+        else { var b = document.createElement("div"); b.className = "card sm back"; comEl.appendChild(b); }
+      }
+      plEl.innerHTML = "";
+      player.forEach(function(c){ plEl.appendChild(cardEl(c, true)); });
+    }
+
+    playBtn.addEventListener("click", function(){
+      if(playing) return;
+      if(balance < bet){ msgEl.innerHTML = t("insufficient"); return; }
+      setBalance(balance - bet);
+      playing = true;
+      var deck = newDeck();
+      player = [deck.pop(), deck.pop()];
+      ai = [deck.pop(), deck.pop()];
+      community = [];
+      handNameEl.textContent = "";
+      msgEl.innerHTML = t("pokerPot", {pot: bet * 2});
+      render(false);
+      var i = 0;
+      (function next(){
+        if(i >= 3){ showdown(); return; }
+        var n = (i === 0) ? 3 : 1;
+        for(var k=0;k<n;k++) community.push(deck.pop());
+        i++;
+        render(false);
+        setTimeout(next, 900);
+      })();
+    });
+
+    function showdown(){
+      playing = false;
+      var ps = best7(player.concat(community));
+      var as = best7(ai.concat(community));
+      handNameEl.textContent = t("pokerYourHand", {hand: t("pkN" + ps[0])});
+      render(true);
+      var r = cmp(ps, as);
+      if(r > 0){
+        setBalance(balance + bet * 2);
+        celebrate(true);
+        msgEl.innerHTML = t("pokerWin", {win: bet * 2});
+      } else if(r < 0){
+        msgEl.innerHTML = t("pokerLose");
+      } else {
+        setBalance(balance + bet);
+        msgEl.innerHTML = t("pokerTie");
+      }
+    }
+  })();
+
+  /* =========================================================
+     UNO (2 players: you vs AI)
+  ========================================================== */
+  (function(){
+    var COLORS = ["red","yellow","green","blue"];
+    var bet = 10, playing = false, turn = "p", curColor = "red", drew = false, pendingWild = null;
+
+    var player = [], ai = [], drawPile = [], discard = [];
+
+    var aiEl = document.getElementById("unAiHand");
+    var plEl = document.getElementById("unPlayerHand");
+    var discardEl = document.getElementById("unDiscard");
+    var badgeEl = document.getElementById("unColorBadge");
+    var msgEl = document.getElementById("unMsg");
+    var chooserEl = document.getElementById("unColorChooser");
+    var drawBtn = document.getElementById("unDrawBtn");
+    var passBtn = document.getElementById("unPassBtn");
+    var startBtn = document.getElementById("unStartBtn");
+    var drawCountEl = document.getElementById("unDrawCount");
+    var aiCountEl = document.getElementById("unAiCount");
+
+    document.querySelectorAll("[data-unbet]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(playing) return;
+        bet = parseInt(btn.dataset.unbet, 10);
+        document.getElementById("unBetDisplay").textContent = bet;
+      });
+    });
+    setupCustomBet("un", function(v){ bet = v; document.getElementById("unBetDisplay").textContent = v; });
+
+    function shuffle(d){
+      for(var i=d.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var tmp=d[i]; d[i]=d[j]; d[j]=tmp; }
+      return d;
+    }
+    function buildDeck(){
+      var d = [];
+      COLORS.forEach(function(c){
+        d.push({c:c, t:"num", v:0});
+        for(var k=1;k<=9;k++){ d.push({c:c,t:"num",v:k}); d.push({c:c,t:"num",v:k}); }
+        ["skip","rev","+2"].forEach(function(tt){ d.push({c:c,t:tt}); d.push({c:c,t:tt}); });
+      });
+      for(var i=0;i<4;i++){ d.push({c:"wild",t:"wild"}); d.push({c:"wild",t:"+4"}); }
+      return shuffle(d);
+    }
+    function top(){ return discard[discard.length-1]; }
+    function isPlayable(card){
+      if(card.t === "wild" || card.t === "+4") return true;
+      if(card.c === curColor) return true;
+      var tp = top();
+      return tp && card.t === tp.t;
+    }
+    function drawCards(hand, n){
+      for(var i=0;i<n;i++){
+        if(drawPile.length === 0) reshuffle();
+        if(drawPile.length === 0) break;
+        hand.push(drawPile.pop());
+      }
+    }
+    function reshuffle(){
+      if(discard.length <= 1) return;
+      var tpCard = discard.pop();
+      drawPile = shuffle(discard);
+      discard = [tpCard];
+    }
+    function dominant(hand){
+      var cnt = {red:0,yellow:0,green:0,blue:0};
+      hand.forEach(function(c){ if(cnt[c.c] !== undefined) cnt[c.c]++; });
+      var best = "red", bv = -1;
+      COLORS.forEach(function(c){ if(cnt[c] > bv){ bv = cnt[c]; best = c; } });
+      return best;
+    }
+
+    function unoCardEl(card, clickable){
+      var d = document.createElement("div");
+      d.className = "uno-card " + card.c + (clickable ? " playable" : " static");
+      d.textContent = (card.t === "num") ? card.v : (card.t === "skip" ? "⊘" : card.t === "rev" ? "⇄" : card.t);
+      return d;
+    }
+    function colorName(c){ return t("color_" + c); }
+
+    function render(){
+      aiEl.innerHTML = "";
+      ai.forEach(function(){
+        var b = document.createElement("div");
+        b.className = "card sm back";
+        aiEl.appendChild(b);
+      });
+      aiCountEl.textContent = ai.length;
+      plEl.innerHTML = "";
+      player.forEach(function(c, idx){
+        var el = unoCardEl(c, playing && turn === "p" && !pendingWild && isPlayable(c));
+        if(playing && turn === "p" && !pendingWild && isPlayable(c)){
+          el.addEventListener("click", function(){ playerPlay(idx); });
+        }
+        plEl.appendChild(el);
+      });
+      discardEl.innerHTML = "";
+      if(discard.length){
+        discardEl.appendChild(unoCardEl(top(), false));
+      } else {
+        var ph = document.createElement("div");
+        ph.className = "uno-card wild static";
+        ph.style.opacity = "0.25";
+        discardEl.appendChild(ph);
+      }
+      badgeEl.innerHTML = t("unoColor") + ': <span class="color-dot ' + curColor + '"></span> ' + colorName(curColor);
+      drawCountEl.textContent = drawPile.length;
+      drawBtn.disabled = !(playing && turn === "p" && !drew && !pendingWild);
+      passBtn.disabled = !(playing && turn === "p" && drew);
+    }
+
+    startBtn.addEventListener("click", function(){
+      if(playing) return;
+      if(balance < bet){ msgEl.innerHTML = t("insufficient"); return; }
+      setBalance(balance - bet);
+      drawPile = buildDeck();
+      player = drawPile.splice(0, 7);
+      ai = drawPile.splice(0, 7);
+      discard = [drawPile.pop()];
+      while(discard[0].t !== "num"){ drawPile.unshift(discard.pop()); discard.push(drawPile.pop()); }
+      curColor = discard[0].c;
+      turn = "p"; drew = false; pendingWild = null; playing = true;
+      chooserEl.style.display = "none";
+      msgEl.innerHTML = t("unoYourTurn");
+      render();
+    });
+
+    drawBtn.addEventListener("click", function(){
+      if(!playing || turn !== "p" || drew || pendingWild) return;
+      drawCards(player, 1);
+      drew = true;
+      msgEl.innerHTML = t("unoDrew");
+      render();
+    });
+
+    passBtn.addEventListener("click", function(){
+      if(!playing || turn !== "p" || !drew) return;
+      drew = false;
+      turn = "a";
+      msgEl.innerHTML = t("unoAiTurn");
+      render();
+      setTimeout(aiTurn, 800);
+    });
+
+    function playerPlay(idx){
+      if(!playing || turn !== "p" || pendingWild) return;
+      var card = player[idx];
+      if(!isPlayable(card)) return;
+      player.splice(idx, 1);
+      discard.push(card);
+      drew = false;
+      if(card.c !== "wild") curColor = card.c;
+      if(card.t === "wild" || card.t === "+4"){
+        pendingWild = card.t;
+        chooserEl.style.display = "flex";
+        msgEl.innerHTML = t("unoChoose");
+        render();
+        return;
+      }
+      applyAction(card, "p");
+      afterPlay("p", card);
+    }
+
+    document.querySelectorAll("#unColorChooser .color-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if(!pendingWild) return;
+        curColor = btn.dataset.color;
+        if(pendingWild === "+4") drawCards(ai, 4);
+        pendingWild = null;
+        chooserEl.style.display = "none";
+        msgEl.innerHTML = t("unoYourTurn");
+        render();
+      });
+    });
+
+    function applyAction(card, who){
+      var victim = (who === "p") ? ai : player;
+      if(card.t === "+2") drawCards(victim, 2);
+      if(card.t === "+4") drawCards(victim, 4);
+    }
+
+    function afterPlay(who, card){
+      if(checkWin(who)) return;
+      var isAction = ["skip","rev","+2","+4","wild"].indexOf(card.t) !== -1;
+      if(who === "p"){
+        if(isAction){ msgEl.innerHTML = t("unoYourTurn"); render(); }
+        else {
+          turn = "a";
+          msgEl.innerHTML = t("unoAiTurn");
+          render();
+          setTimeout(aiTurn, 800);
+        }
+      } else {
+        if(isAction){ msgEl.innerHTML = t("unoAiTurn"); render(); setTimeout(aiTurn, 800); }
+        else { turn = "p"; drew = false; msgEl.innerHTML = t("unoYourTurn"); render(); }
+      }
+    }
+
+    function aiTurn(){
+      if(!playing) return;
+      var idx = -1;
+      for(var i=0;i<ai.length;i++){ if(isPlayable(ai[i])){ idx = i; break; } }
+      if(idx === -1){
+        drawCards(ai, 1);
+        if(checkWin("a")) { render(); return; }
+        var last = ai[ai.length-1];
+        if(last && isPlayable(last)){
+          ai.pop();
+          discard.push(last);
+          if(last.c !== "wild") curColor = last.c;
+          else curColor = dominant(ai);
+          if(last.t === "wild" || last.t === "+4"){
+            if(last.t === "+4") drawCards(player, 4);
+            afterPlay("a", last);
+            return;
+          }
+          applyAction(last, "a");
+          afterPlay("a", last);
+          return;
+        }
+        turn = "p"; drew = false;
+        msgEl.innerHTML = t("unoYourTurn");
+        render();
+        return;
+      }
+      var card = ai.splice(idx, 1)[0];
+      discard.push(card);
+      if(card.c !== "wild") curColor = card.c;
+      else {
+        if(card.t === "+4"){ curColor = dominant(ai); drawCards(player, 4); }
+        else curColor = dominant(ai);
+      }
+      applyAction(card, "a");
+      afterPlay("a", card);
+    }
+
+    function checkWin(who){
+      var hand = (who === "p") ? player : ai;
+      if(hand.length > 0) return false;
+      playing = false;
+      render();
+      if(who === "p"){
+        setBalance(balance + bet * 2);
+        celebrate(true);
+        msgEl.innerHTML = t("unoWin", {win: bet * 2});
+      } else {
+        msgEl.innerHTML = t("unoLose");
+      }
+      return true;
+    }
+  })();
 
   /* =========================================================
      CLICKER
@@ -1260,7 +2169,7 @@
       {id:"c10000",  icon:"🖱️", key:"aC10k",  check:function(s){return s.totalClicks>=10000;}},
       {id:"c100000", icon:"🖱️", key:"aC100k", check:function(s){return s.totalClicks>=100000;}},
       {id:"c500000", icon:"🖱️", key:"aC500k", check:function(s){return s.totalClicks>=500000;}},
-      {id:"c1m",     icon:"🏆", key:"aC1m",   check:function(s){return s.totalClicks>=1000000;}},
+      {id:"c1m",     icon:"🏆", key:"aC1m",   check:function(s){return s.totalClicks>=100000000;}},
       {id:"e500",    icon:"💰", key:"aE500",  check:function(s){return s.totalEarned>=500;}},
       {id:"e5k",     icon:"💰", key:"aE5k",   check:function(s){return s.totalEarned>=5000;}},
       {id:"e50k",    icon:"💰", key:"aE50k",  check:function(s){return s.totalEarned>=50000;}},
